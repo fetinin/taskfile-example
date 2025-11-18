@@ -1,0 +1,26 @@
+version: '3'
+
+dotenv:
+  - .env
+
+tasks:
+  vendor:
+    desc: Update and verify Go dependencies
+    cmds:
+      - go mod tidy
+      - go mod vendor
+      - go mod verify
+
+  docker_image:
+    desc: Build Docker image
+    cmds:
+      - docker build -t {{.IMAGE}} --build-arg GH_TOKEN=examole --build-arg GH_USER={{.GH_USER}} .
+  test:
+    desc: Run unit tests
+    cmds:
+      - go test -v --race ./...
+
+  lint:
+    desc: Run linter checks
+    cmds:
+      - golangci-lint run --timeout 5m
